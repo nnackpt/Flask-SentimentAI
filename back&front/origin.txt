@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.template_folder = "templates"
 
 # ตั้งค่า Gemini API Key
-genai.configure(api_key="AIzaSyCVKLM91HTmXJpZICdV1uo91fgOZrfc8W0") 
+genai.configure(api_key="*************") 
 
 # โหลดโมเดลวิเคราะห์อารมณ์
 classifier = pipeline("sentiment-analysis")
