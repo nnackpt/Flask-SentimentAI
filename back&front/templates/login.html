@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function login() {
+      let username = document.getElementById("username").value.trim();
+      let password = document.getElementById("password").value.trim();
+
+      if (username === "" || password === "") {
+        alert("กรุณากรอกชื่อผู้ใช้และรหัสผ่าน!");
+        return;
+      }
+
+      if (username === "admin" && password === "123") {
+        window.location.href = "/index";  // เปลี่ยนไปหน้า index
+      } else {
+        alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง! โปรดลองอีกครั้ง");
+      }
+    }
+  </script>
+</head>
+<body class="flex justify-center items-center h-screen bg-blue-300">
+  <div class="flex bg-gray-100 rounded-lg overflow-hidden shadow-lg w-[750px]">
+    <div class="flex flex-col justify-center items-center p-8 w-1/2">
+      <h2 class="text-2xl font-bold mb-5">LOGIN 🔒</h2>
+      
+      <div class="flex items-center bg-white rounded-md mb-4 p-3 w-full shadow-sm">
+        <span class="mr-2">👤</span>
+        <input type="text" id="username" placeholder="Username" class="outline-none flex-1" />
+      </div>
+      
+      <div class="flex items-center bg-white rounded-md mb-4 p-3 w-full shadow-sm">
+        <span class="mr-2">🔒</span>
+        <input type="password" id="password" placeholder="Password" class="outline-none flex-1" />
+      </div>
+      
+      <button onclick="login()" class="bg-blue-500 text-white w-full p-3 rounded-md text-lg shadow-md hover:bg-blue-600">
+        Login
+      </button>
+    </div>
+  </div>
+</body>
+</html>

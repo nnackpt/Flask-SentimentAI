@@ -1,14 +1,16 @@
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 import google.generativeai as genai
 from transformers import AutoTokenizer, pipeline
 import re
 from pythainlp.tokenize import word_tokenize
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
+CORS(app)
 app.template_folder = "templates"
 
 # ตั้งค่า Gemini API Key
-genai.configure(api_key="***********************")   
+genai.configure(api_key="********")   
 
 # ใช้โมเดลใหม่ที่แม่นยำขึ้น
 eng_model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -25,6 +27,12 @@ thai_classifier = pipeline("sentiment-analysis", model=thai_model_name, tokenize
 def preprocess_text(text, language):
     text = text.lower().strip()
     text = re.sub(r"[^\w\s]", "", text)  # ลบอักขระพิเศษ
+    
+    # จำกัดความยาวข้อความ
+    max_length = 512  # ตามข้อจำกัดของโมเดล
+    if len(text) > max_length:
+        text = text[:max_length]
+    
     if language == "th":
         text = " ".join(word_tokenize(text))  # ตัดคำภาษาไทย
     return text
@@ -56,48 +64,63 @@ def map_sentiment(sentiment_label, score, language):
 
 # ฟังก์ชันเรียก Gemini API
 def get_gemini_response(prompt, language):
-    model = genai.GenerativeModel("gemini-pro")
-    
-    if language == "th":
-        prompt = f"ตอบคำถามนี้เป็นภาษาไทย โดยให้คำตอบเป็นมุมมองของธุรกิจว่าควรตอบกลับลูกค้าอย่างไร: {prompt}"
-    else:
-        prompt = f"Answer this question in English, giving your answer from a business perspective on how you should respond to your customers: {prompt}"
-
-    response = model.generate_content(prompt)
-    return response.text
+    try:
+        model = genai.GenerativeModel("gemini-pro")
+        
+        if language == "th":
+            prompt = f"ตอบคำถามนี้เป็นภาษาไทย โดยให้คำตอบเป็นมุมมองของธุรกิจว่าควรตอบกลับลูกค้าอย่างไร: {prompt}"
+        else:
+            prompt = f"Answer this question in English, giving your answer from a business perspective on how you should respond to your customers: {prompt}"
+        
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"Error calling Gemini API: {e}")
+        return "ขออภัย ไม่สามารถสร้างคำตอบได้ในขณะนี้ กรุณาลองใหม่ภายหลัง"
 
 # หน้าแรกของเว็บ
 @app.route("/")
+def login_page():
+    return render_template("login.html")
+
+@app.route("/index")
 def home():
     return render_template("index.html")
 
 # API วิเคราะห์ข้อความ
 @app.route("/analyze", methods=["POST"])
 def analyze():
-    data = request.get_json()
-    user_text = data.get("text")
-    language = data.get("language", "th")
+    try:
+        data = request.get_json()
+        user_text = data.get("text")
+        language = data.get("language", "th")
 
-    # ทำความสะอาดข้อความ
-    processed_text = preprocess_text(user_text, language)
+        if not user_text or not isinstance(user_text, str):
+            return jsonify({"error": "กรุณาใส่ข้อความที่ต้องการวิเคราะห์"}), 400
 
-    # วิเคราะห์อารมณ์
-    if language == "th":
-        sentiment_result = thai_classifier(processed_text)[0]
-    else:
-        sentiment_result = eng_classifier(processed_text)[0]
+        # ทำความสะอาดข้อความ
+        processed_text = preprocess_text(user_text, language)
 
-    sentiment = map_sentiment(sentiment_result["label"], sentiment_result["score"], language)
-    confidence = round(sentiment_result["score"], 2)
+        # วิเคราะห์อารมณ์
+        if language == "th":
+            sentiment_result = thai_classifier(processed_text)[0]
+        else:
+            sentiment_result = eng_classifier(processed_text)[0]
 
-    # ให้ AI ตอบในภาษาที่เลือก
-    ai_response = get_gemini_response(user_text, language)
+        sentiment = map_sentiment(sentiment_result["label"], sentiment_result["score"], language)
+        confidence = round(sentiment_result["score"], 2)
 
-    return jsonify({
-        "sentiment": sentiment,
-        "confidence": confidence,
-        "response": ai_response,
-    })
+        # ให้ AI ตอบในภาษาที่เลือก
+        ai_response = get_gemini_response(user_text, language)
+
+        return jsonify({
+            "sentiment": sentiment,
+            "confidence": confidence,
+            "response": ai_response,
+        })
+    except Exception as e:
+        print(f"Error during analysis: {e}")
+        return jsonify({"error": "เกิดข้อผิดพลาดระหว่างการวิเคราะห์ กรุณาลองใหม่ภายหลัง"}), 500
 
 # ข้าม favicon.ico เพื่อไม่ให้เกิด 404
 @app.route('/favicon.ico')
