@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
 import google.generativeai as genai
 from transformers import AutoTokenizer, pipeline
@@ -10,7 +10,7 @@ CORS(app)
 app.template_folder = "templates"
 
 # ตั้งค่า Gemini API Key
-genai.configure(api_key="********")   
+genai.configure(api_key="***********************")   
 
 # ใช้โมเดลใหม่ที่แม่นยำขึ้น
 eng_model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -87,6 +87,32 @@ def login_page():
 def home():
     return render_template("index.html")
 
+# Route สำหรับการออกจากระบบ
+@app.route("/logout")
+def logout():
+    return redirect(url_for("login_page"))
+
+# สร้าง list สำหรับเก็บประวัติการวิเคราะห์
+analysis_history = []
+
+@app.route("/delete_history", methods=["POST"])
+def delete_history():
+    try:
+        data = request.get_json()
+        text_to_delete = data.get("text")
+
+        if not text_to_delete:
+            return jsonify({"success": False, "error": "ไม่พบข้อมูลที่ต้องการลบ"}), 400
+
+        # ลบข้อมูลจากประวัติ
+        global analysis_history
+        analysis_history = [item for item in analysis_history if item["text"] != text_to_delete]
+
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"Error during deletion: {e}")
+        return jsonify({"success": False, "error": "เกิดข้อผิดพลาดขณะลบข้อมูล"}), 500
+
 # API วิเคราะห์ข้อความ
 @app.route("/analyze", methods=["POST"])
 def analyze():
@@ -113,6 +139,14 @@ def analyze():
         # ให้ AI ตอบในภาษาที่เลือก
         ai_response = get_gemini_response(user_text, language)
 
+        # เก็บประวัติการวิเคราะห์
+        analysis_history.append({
+            "text": user_text,
+            "sentiment": sentiment,
+            "confidence": confidence,
+            "response": ai_response
+        })
+
         return jsonify({
             "sentiment": sentiment,
             "confidence": confidence,
@@ -121,6 +155,11 @@ def analyze():
     except Exception as e:
         print(f"Error during analysis: {e}")
         return jsonify({"error": "เกิดข้อผิดพลาดระหว่างการวิเคราะห์ กรุณาลองใหม่ภายหลัง"}), 500
+    
+# Route สำหรับหน้าประวัติการวิเคราะห์
+@app.route("/history")
+def history_page():
+    return render_template("history.html", history=analysis_history)
 
 # ข้าม favicon.ico เพื่อไม่ให้เกิด 404
 @app.route('/favicon.ico')
