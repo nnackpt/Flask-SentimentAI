@@ -8,7 +8,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=1">
 </head>
 <body>
-    <button id="logoutBtn" class="logout-button" onclick="logout()">ออกจากระบบ</button>
+    <header>
+        <div class="navbar">
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">หน้าแรก</a>
+                <a href="{{ url_for('history_page') }}">ประวัติการวิเคราะห์</a>
+            </div>
+            <a class="logout-button" href="{{ url_for('logout') }}">ออกจากระบบ</a>
+        </div>
+    </header>
     <div class="container">
         <h2>วิเคราะห์ข้อความด้วย NLP</h2>
         <label for="language">เลือกภาษา:</label>
@@ -25,9 +33,7 @@
             <div class="bar7"></div><div class="bar8"></div><div class="bar9"></div>
             <div class="bar10"></div><div class="bar11"></div><div class="bar12"></div>
         </div>
-        <div id="result"></div>
-        <h3>ประวัติการวิเคราะห์</h3>
-        <div id="history" class="history"></div>
+        <div id="result" class="result-container" style="display: none;"></div>
     </div>
     <script>
 
@@ -45,7 +51,7 @@
 
             analyzeBtn.style.display = "none";
             loader.style.display = "block";
-            resultDiv.innerHTML = "";
+            resultDiv.style.display = "none"; // ซ่อนกรอบผลลัพธ์ตอนเริ่มต้น
             
             fetch("/analyze", {
                 method: "POST",
@@ -57,68 +63,15 @@
                 if (data.error) {
                     resultDiv.innerHTML = `<p style="color:red;"><b>ข้อผิดพลาด:</b> ${data.error}</p>`;
                 } else {
-                    let analysisResult = {
-                        text: text,
-                        sentiment: data.sentiment,
-                        confidence: data.confidence,
-                        response: data.response
-                    };
-                    saveToHistory(analysisResult);
-                    renderHistory();
                     resultDiv.innerHTML = `<h3>ผลลัพธ์</h3><p><b>อารมณ์:</b> ${data.sentiment} (ความมั่นใจ: ${data.confidence})</p><p><b>AI ตอบ:</b> ${data.response}</p>`;
                 }
+                resultDiv.style.display = "block"; // แสดงกรอบผลลัพธ์เมื่อมีผลลัพธ์
             })
             .finally(() => {
                 analyzeBtn.style.display = "inline-block";
                 loader.style.display = "none";
             });
         }
-
-        function saveToHistory(result) {
-            let history = JSON.parse(localStorage.getItem("analysisHistory")) || [];
-            history.unshift(result);
-            localStorage.setItem("analysisHistory", JSON.stringify(history));
-        }
-
-        function renderHistory() {
-            let historyDiv = document.getElementById("history");
-            let history = JSON.parse(localStorage.getItem("analysisHistory")) || [];
-            historyDiv.innerHTML = "";
-            history.forEach((item, index) => {
-                let entry = document.createElement("div");
-                entry.classList.add("history-item");
-                entry.innerHTML = `
-                    <p><b>ข้อความ:</b> ${item.text}</p>
-                    <p><b>อารมณ์:</b> ${item.sentiment} (ความมั่นใจ: ${item.confidence})</p>
-                    <p><b>AI ตอบ:</b> ${item.response}</p>
-                    <button class="download-btn" onclick="downloadResult(${index})">ดาวน์โหลด</button>
-                    <button class="delete-btn" onclick="deleteHistory(${index})">ลบ</button>
-                `;
-                historyDiv.appendChild(entry);
-            });
-        }
-
-        function deleteHistory(index) {
-            let history = JSON.parse(localStorage.getItem("analysisHistory")) || [];
-            history.splice(index, 1);
-            localStorage.setItem("analysisHistory", JSON.stringify(history));
-            renderHistory();
-        }
-
-        function downloadResult(index) {
-            let history = JSON.parse(localStorage.getItem("analysisHistory")) || [];
-            let item = history[index];
-            let content = `ข้อความ: ${item.text}\nอารมณ์: ${item.sentiment} (ความมั่นใจ: ${item.confidence})\nAI ตอบ: ${item.response}`;
-            let blob = new Blob([content], { type: "text/plain" });
-            let a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = "analysis_result.txt";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-        
-        document.addEventListener("DOMContentLoaded", renderHistory);
     </script>
 </body>
 </html>

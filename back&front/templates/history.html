@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=1">
+</head>
+<body>
+    <header>
+        <div class="navbar" >
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">หน้าแรก</a>
+                <a href="{{ url_for('history_page') }}">ประวัติการวิเคราะห์</a>
+            </div>
+            <a class="logout-button" href="{{ url_for('logout') }}">ออกจากระบบ</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>ประวัติการวิเคราะห์</h2>
+        <div class="history-list">
+            {% for item in history %}
+            <div class="history-item">
+                <div class="history-content">
+                    <p><b>ข้อความ:</b> {{ item.text }}</p>
+                    <p><b>อารมณ์:</b> {{ item.sentiment }}</p>
+                    <p><b>ความมั่นใจ:</b> {{ item.confidence }}</p>
+                    <p><b>คำตอบ AI:</b> {{ item.response }}</p>
+                </div>
+                <div class="history-actions">
+                    <button class="download-btn" onclick="downloadResult('{{ item.text }}', '{{ item.sentiment }}', '{{ item.confidence }}', '{{ item.response }}')">ดาวน์โหลด</button>
+                    <button class="delete-btn" onclick="deleteHistory('{{ item.text }}')">ลบ</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // ฟังก์ชันลบประวัติการวิเคราะห์
+        function deleteHistory(text) {
+            if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?")) {
+                fetch("/delete_history", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: text })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // รีเฟรชหน้าเพื่ออัปเดตประวัติ
+                    } else {
+                        alert("เกิดข้อผิดพลาดขณะลบข้อมูล");
+                    }
+                });
+            }
+        }
+    
+        // ฟังก์ชันดาวน์โหลดประวัติการวิเคราะห์เป็นไฟล์ txt
+        function downloadResult(text, sentiment, confidence, response) {
+            const content = `ข้อความ: ${text}\nอารมณ์: ${sentiment} (ความมั่นใจ: ${confidence})\nคำตอบ AI: ${response}`;
+            const blob = new Blob([content], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "analysis_result.txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
