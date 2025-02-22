@@ -1,5 +1,5 @@
-body { font-family: "Prompt", sans-serif; text-align: center; background-color: #93C5FD; color: white; }
-.container { max-width: 600px; margin: 100px auto; padding: 40px; background: rgba(255, 255, 255, 0.9); border-radius: 10px; box-shadow: 0px 0px 15px #333; color: black; }
+body { font-family: "Prompt", sans-serif; text-align: center; background-color: #93C5FD; color: rgb(0, 0, 0); }
+.container { max-width: 600px; margin: 30px auto; padding: 40px; background: rgba(255, 255, 255, 0.9); border-radius: 10px; box-shadow: 0px 0px 15px #333; color: black; }
 textarea { width: 100%; height: 100px; padding: 10px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; transition: 0.3s; }
 textarea:focus { border-color: #007bff; box-shadow: 0px 0px 8px #007bff; }
 .comic-button { font-family: "Prompt", sans-serif; display: inline-block; margin-top: 20px; padding: 10px 20px; font-size: 18px; font-weight: bold; text-align: center; text-decoration: none; color: #fff; background-color: #ff5252; border: 2px solid #000; border-radius: 6px; box-shadow: 5px 5px 0px #000; transition: all 0.3s ease; cursor: pointer; }
@@ -27,7 +27,112 @@ textarea::placeholder { font-family: "Kanit", sans-serif; font-size: 16px; color
 .history-item { padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-top: 10px; background: white; color: black; }
 .history-actions { margin-top: 5px; }
 .history-btn { margin-right: 10px; padding: 5px 10px; border: none; cursor: pointer; }
-.delete-btn { background: red; color: white; }
-.download-btn { background: green; color: white; }
-.logout-button { position: absolute; top: 20px; right: 20px; background-color: #ff5252; color: white; border: none; padding: 10px 15px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+.logout-button { position: absolute; top: 20px; right: 20px; background-color: #ff5252; color: white; border: none; padding: 10px 15px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; text-decoration: none;}
 .logout-button:hover { background-color: #ff0000; }
+header { background: #93C5FD; }
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 15px; /* ลด padding ให้ navbar เล็กลง */
+    border-radius: 6px; /* ลดความโค้ง */
+    padding-right: 140px;
+    padding-top: 15px;
+}
+.nav-links {
+    margin-left: auto;
+    display: flex;
+    gap: 5px; /* ลดช่องว่างระหว่างปุ่ม */
+}
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 6px 12px; /* ลดขนาดปุ่ม */
+    font-size: 16px; /* ลดขนาดตัวอักษร */
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+    border-radius: 5px;
+}
+.nav-links a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* ระยะห่างระหว่างรายการ */
+}
+
+.history-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    justify-content: space-between; /* แยกเนื้อหาไปสองฝั่ง */
+    align-items: flex-start; /* จัดให้เนื้อหาอยู่ด้านบน */
+}
+
+.history-item p {
+    margin: 5px 0;
+}
+.result-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result-container h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #333;
+    text-align: left; /* ตั้งค่าให้หัวข้อชิดซ้าย */
+}
+
+.result-container p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+    text-align: left; /* ตั้งค่าให้ข้อความชิดซ้าย */
+}
+.delete-btn, .download-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+.delete-btn:hover {
+    background-color: #cc0000;
+}
+
+.download-btn {
+    background-color: #4CAF50;
+}
+
+.download-btn:hover {
+    background-color: #45a049;
+}
+.history-content {
+    flex: 1; /* ให้เนื้อหาขยายเต็มพื้นที่ที่เหลือ */
+}
+
+.history-content p {
+    margin: 5px 0;
+    text-align: left;
+}
+
+.history-actions {
+    display: flex;
+    gap: 5px; /* ระยะห่างระหว่างปุ่ม */
+    align-items: center; /* จัดให้ปุ่มอยู่ตรงกลางแนวตั้ง */
+    margin-left: auto; /* ผลักปุ่มไปชิดขวา */
+}
