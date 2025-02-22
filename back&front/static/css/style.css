@@ -136,3 +136,30 @@ header { background: #93C5FD; }
     align-items: center; /* จัดให้ปุ่มอยู่ตรงกลางแนวตั้ง */
     margin-left: auto; /* ผลักปุ่มไปชิดขวา */
 }
+.custom-textarea {
+    width: calc(100% - 40px); /* กว้างเต็มพื้นที่ ลบระยะห่างซ้ายขวา */
+    height: 150px; /* ความสูงของ textarea */
+    padding: 15px; /* ระยะห่างภายใน */
+    font-size: 16px; /* ขนาดฟอนต์ */
+    font-family: 'Prompt', sans-serif; /* ฟอนต์ที่ใช้ */
+    border: 2px solid #ccc; /* ขอบสีเทา */
+    border-radius: 8px; /* ขอบมน */
+    background-color: #f9f9f9; /* สีพื้นหลัง */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* เงาภายใน */
+    resize: none; /* ปิดการปรับขนาด */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* เอฟเฟกต์เมื่อมีการโต้ตอบ */
+    margin: 10px 0; /* ระยะห่างด้านบนและด้านล่าง */
+}
+
+/* เมื่อผู้ใช้คลิกใน textarea */
+.custom-textarea:focus {
+    border-color: #93C5FD; /* เปลี่ยนสีขอบเมื่อโฟกัส */
+    box-shadow: 0 0 8px #56a5ff; /* เพิ่มเงาเมื่อโฟกัส */
+    outline: none; /* ลบเส้นขอบไฮไลต์เริ่มต้น */
+}
+
+/* สไตล์ placeholder */
+.custom-textarea::placeholder {
+    color: #aaa; /* สีของ placeholder */
+    font-style: italic; /* ตัวเอียง */
+}
