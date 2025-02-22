@@ -37,9 +37,12 @@
         .history-btn { margin-right: 10px; padding: 5px 10px; border: none; cursor: pointer; }
         .delete-btn { background: red; color: white; }
         .download-btn { background: green; color: white; }
-    </style>
+        .logout-button { position: absolute; top: 20px; right: 20px; background-color: #ff5252; color: white; border: none; padding: 10px 15px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .logout-button:hover { background-color: #ff0000; }
+    </style>   
 </head>
 <body>
+    <button id="logoutBtn" class="logout-button" onclick="logout()">ออกจากระบบ</button>
     <div class="container">
         <h2>วิเคราะห์ข้อความด้วย NLP</h2>
         <label for="language">เลือกภาษา:</label>
