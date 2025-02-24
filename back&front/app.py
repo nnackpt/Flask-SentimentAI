@@ -4,13 +4,14 @@ import google.generativeai as genai
 from transformers import AutoTokenizer, pipeline
 import re
 from pythainlp.tokenize import word_tokenize
+from datetime import datetime
 
 app = Flask(__name__, static_folder='static')
 CORS(app)
 app.template_folder = "templates"
 
 # ตั้งค่า Gemini API Key
-genai.configure(api_key="***********************")   
+genai.configure(api_key="AIzaSyCVKLM91HTmXJpZICdV1uo91fgOZrfc8W0")   
 
 # ใช้โมเดลใหม่ที่แม่นยำขึ้น
 eng_model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -22,6 +23,46 @@ eng_classifier = pipeline("sentiment-analysis", model=eng_model_name, tokenizer=
 
 thai_tokenizer = AutoTokenizer.from_pretrained(thai_model_name)
 thai_classifier = pipeline("sentiment-analysis", model=thai_model_name, tokenizer=thai_tokenizer)
+
+# รายการคำสำคัญสำหรับอารมณ์เชิงลบและเชิงบวก
+NEGATIVE_KEYWORDS = [
+    "ห่วย", "เสียหาย", "แย่", "ผิดหวัง", "ไม่พอใจ", "เลวร้าย", 
+    "พัง", "ชำรุด", "ไม่ได้เรื่อง", "หลอกลวง", "โกง", 
+    "ไม่ตรงปก", "ไม่โอเค", "ไม่ดี", "ไม่มีคุณภาพ", "ไร้ประโยชน์", 
+    "ผิดพลาด", "ไม่สมราคา", "ไม่ครบ", "ขาดตก", "บกพร่อง", 
+    "ช้า", "ล่าช้า", "ไม่ตอบโจทย์", "ไม่เป็นไปตามที่กล่าวอ้าง", 
+    "ไม่เหมาะสม", "ไม่สะดวก", "ไม่พอใจอย่างมาก", "ไม่ได้มาตรฐาน", 
+    "ไม่น่าพอใจ", "ไม่คุ้มค่า", "ไม่ใส่ใจ", "ไม่เอาใจใส่", 
+    "ไม่สนใจ", "ไม่แก้ไข", "ไม่ช่วยเหลือ", "ไม่ตอบสนอง", 
+    "ไม่รับผิดชอบ", "ไม่จริงใจ", "ไม่โปร่งใส", "ไม่ซื่อสัตย์"
+]
+
+POSITIVE_KEYWORDS = [
+    "ดี", "พอใจ", "ขอบคุณ", "ยอดเยี่ยม", "ประทับใจ", 
+    "คุ้มค่า", "คุณภาพดี", "รวดเร็ว", "ตรงเวลา", "ถูกต้อง", 
+    "น่าพอใจ", "น่าประทับใจ", "สมบูรณ์แบบ", "ครบถ้วน", 
+    "เป็นมืออาชีพ", "ใส่ใจ", "เอาใจใส่", "ช่วยเหลือดี", 
+    "ตอบสนองดี", "รับผิดชอบ", "จริงใจ", "โปร่งใส", "ซื่อสัตย์", 
+    "น่าเชื่อถือ", "น่าไว้วางใจ", "เกินคาด", "เหนือความคาดหมาย", 
+    "น่าสนับสนุน", "น่าใช้งาน", "น่าซื้อ", "น่าลอง", 
+    "น่าสนใจ", "น่าติดตาม", "น่าสัมผัส", "น่าชื่นชม"
+]
+
+def detect_keywords(text):
+    text = text.lower()
+    
+    # นับจำนวนคำเชิงบวกและเชิงลบ
+    positive_count = sum(1 for keyword in POSITIVE_KEYWORDS if keyword in text)
+    negative_count = sum(1 for keyword in NEGATIVE_KEYWORDS if keyword in text)
+    
+    # กำหนดอารมณ์ตามจำนวนคำ
+    if positive_count > negative_count:
+        return "positive"
+    elif negative_count > positive_count:
+        return "negative"
+    
+    # หากไม่มีคำสำคัญ คืนค่า None
+    return None
 
 # ฟังก์ชันประมวลผลข้อความก่อนวิเคราะห์อารมณ์
 def preprocess_text(text, language):
@@ -120,37 +161,46 @@ def analyze():
         data = request.get_json()
         user_text = data.get("text")
         language = data.get("language", "th")
-
         if not user_text or not isinstance(user_text, str):
             return jsonify({"error": "กรุณาใส่ข้อความที่ต้องการวิเคราะห์"}), 400
-
+        
         # ทำความสะอาดข้อความ
         processed_text = preprocess_text(user_text, language)
-
-        # วิเคราะห์อารมณ์
-        if language == "th":
-            sentiment_result = thai_classifier(processed_text)[0]
+        
+        # ตรวจจับคำสำคัญ
+        keyword_sentiment = detect_keywords(user_text)
+        if keyword_sentiment == "negative":
+            sentiment = "ไม่พอใจ 😟"
+            confidence = 0.95
+        elif keyword_sentiment == "positive":
+            sentiment = "พอใจ 🙂"
+            confidence = 0.95
         else:
-            sentiment_result = eng_classifier(processed_text)[0]
-
-        sentiment = map_sentiment(sentiment_result["label"], sentiment_result["score"], language)
-        confidence = round(sentiment_result["score"], 2)
-
+            # วิเคราะห์อารมณ์ด้วยโมเดล
+            if language == "th":
+                sentiment_result = thai_classifier(processed_text)[0]
+            else:
+                sentiment_result = eng_classifier(processed_text)[0]
+            sentiment = map_sentiment(sentiment_result["label"], sentiment_result["score"], language)
+            confidence = round(sentiment_result["score"], 2)
+        
         # ให้ AI ตอบในภาษาที่เลือก
         ai_response = get_gemini_response(user_text, language)
-
-        # เก็บประวัติการวิเคราะห์
+        
+        # เก็บประวัติการวิเคราะห์พร้อมบันทึกเวลา
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # บันทึกเวลาปัจจุบัน
         analysis_history.append({
             "text": user_text,
             "sentiment": sentiment,
             "confidence": confidence,
-            "response": ai_response
+            "response": ai_response,
+            "timestamp": timestamp  # เพิ่มฟิลด์ timestamp
         })
-
         return jsonify({
             "sentiment": sentiment,
             "confidence": confidence,
             "response": ai_response,
+            "timestamp": timestamp  # ส่งค่า timestamp กลับไปยัง frontend (ถ้าต้องการ)
         })
     except Exception as e:
         print(f"Error during analysis: {e}")
@@ -159,7 +209,14 @@ def analyze():
 # Route สำหรับหน้าประวัติการวิเคราะห์
 @app.route("/history")
 def history_page():
-    return render_template("history.html", history=analysis_history)
+    # ตรวจสอบและเพิ่มค่าเริ่มต้นสำหรับ timestamp หากไม่มี
+    for item in analysis_history:
+        if "timestamp" not in item:
+            item["timestamp"] = "1970-01-01 00:00:00"  # ค่าเริ่มต้นสำหรับข้อมูลเก่า
+    
+    # เรียงข้อมูลประวัติจากใหม่ไปเก่า (Newest to Oldest)
+    sorted_history = sorted(analysis_history, key=lambda x: x["timestamp"], reverse=True)
+    return render_template("history.html", history=sorted_history)
 
 # ข้าม favicon.ico เพื่อไม่ให้เกิด 404
 @app.route('/favicon.ico')
