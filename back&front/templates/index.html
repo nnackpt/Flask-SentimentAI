@@ -11,12 +11,15 @@
     <header>
         <div class="navbar">
             <div class="nav-links">
-                <a href="{{ url_for('home') }}">หน้าแรก</a>
-                <a href="{{ url_for('history_page') }}">ประวัติการวิเคราะห์</a>
+                <!-- ตรวจสอบว่าอยู่ที่หน้าแรกหรือไม่ -->
+                <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">หน้าแรก</a>
+                <!-- ตรวจสอบว่าอยู่ที่หน้าประวัติการวิเคราะห์หรือไม่ -->
+                <a href="{{ url_for('history_page') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">ประวัติการวิเคราะห์</a>
             </div>
             <a class="logout-button" href="{{ url_for('logout') }}">ออกจากระบบ</a>
         </div>
     </header>
+    
     <div class="container">
         <h2>วิเคราะห์ข้อความด้วย NLP</h2>
         <label for="language">เลือกภาษา:</label>

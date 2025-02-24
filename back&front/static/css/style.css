@@ -163,3 +163,10 @@ header { background: #93C5FD; }
     color: #aaa; /* สีของ placeholder */
     font-style: italic; /* ตัวเอียง */
 }
+/* เอฟเฟคสำหรับลิงก์ที่กำลังเปิดอยู่ */
+.nav-links a.active {
+    color: #fff;
+    background-color: #007bff;
+    padding: 5px 10px;
+    border-radius: 5px;
+}

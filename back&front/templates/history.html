@@ -9,35 +9,41 @@
 </head>
 <body>
     <header>
-        <div class="navbar" >
+        <div class="navbar">
             <div class="nav-links">
-                <a href="{{ url_for('home') }}">หน้าแรก</a>
-                <a href="{{ url_for('history_page') }}">ประวัติการวิเคราะห์</a>
+                <!-- ตรวจสอบว่าอยู่ที่หน้าแรกหรือไม่ -->
+                <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">หน้าแรก</a>
+                <!-- ตรวจสอบว่าอยู่ที่หน้าประวัติการวิเคราะห์หรือไม่ -->
+                <a href="{{ url_for('history_page') }}" class="{% if request.endpoint == 'history_page' %}active{% endif %}">ประวัติการวิเคราะห์</a>
             </div>
             <a class="logout-button" href="{{ url_for('logout') }}">ออกจากระบบ</a>
         </div>
     </header>
-
     <div class="container">
         <h2>ประวัติการวิเคราะห์</h2>
         <div class="history-list">
-            {% for item in history %}
-            <div class="history-item">
-                <div class="history-content">
-                    <p><b>ข้อความ:</b> {{ item.text }}</p>
-                    <p><b>อารมณ์:</b> {{ item.sentiment }}</p>
-                    <p><b>ความมั่นใจ:</b> {{ item.confidence }}</p>
-                    <p><b>คำตอบ AI:</b> {{ item.response }}</p>
+            <!-- ตรวจสอบว่ามีประวัติการวิเคราะห์หรือไม่ -->
+            {% if history %}
+                {% for item in history %}
+                <div class="history-item">
+                    <div class="history-content">
+                        <p><b>ข้อความ:</b> {{ item.text }}</p>
+                        <p><b>อารมณ์:</b> {{ item.sentiment }}</p>
+                        <p><b>ความมั่นใจ:</b> {{ item.confidence }}</p>
+                        <p><b>คำตอบ AI:</b> {{ item.response }}</p>
+                        <p><b>เวลา:</b> {{ item.timestamp }}</p> <!-- เพิ่มการแสดงเวลา -->
+                    </div>
+                    <div class="history-actions">
+                        <button class="download-btn" onclick="downloadResult('{{ item.text }}', '{{ item.sentiment }}', '{{ item.confidence }}', '{{ item.response }}')">ดาวน์โหลด</button>
+                        <button class="delete-btn" onclick="deleteHistory('{{ item.text }}')">ลบ</button>
+                    </div>
                 </div>
-                <div class="history-actions">
-                    <button class="download-btn" onclick="downloadResult('{{ item.text }}', '{{ item.sentiment }}', '{{ item.confidence }}', '{{ item.response }}')">ดาวน์โหลด</button>
-                    <button class="delete-btn" onclick="deleteHistory('{{ item.text }}')">ลบ</button>
-                </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; color: #888;">ไม่มีประวัติการวิเคราะห์</p>
+            {% endif %}
         </div>
     </div>
-
     <script>
         // ฟังก์ชันลบประวัติการวิเคราะห์
         function deleteHistory(text) {
@@ -57,7 +63,7 @@
                 });
             }
         }
-    
+
         // ฟังก์ชันดาวน์โหลดประวัติการวิเคราะห์เป็นไฟล์ txt
         function downloadResult(text, sentiment, confidence, response) {
             const content = `ข้อความ: ${text}\nอารมณ์: ${sentiment} (ความมั่นใจ: ${confidence})\nคำตอบ AI: ${response}`;
