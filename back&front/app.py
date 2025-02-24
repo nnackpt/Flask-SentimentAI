@@ -124,7 +124,7 @@ def get_gemini_response(prompt, language):
 def login_page():
     return render_template("login.html")
 
-@app.route("/index")
+@app.route("/home")
 def home():
     return render_template("index.html")
 
