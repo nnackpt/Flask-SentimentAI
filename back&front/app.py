@@ -11,7 +11,7 @@ CORS(app)
 app.template_folder = "templates"
 
 # ตั้งค่า Gemini API Key
-genai.configure(api_key="AIzaSyCVKLM91HTmXJpZICdV1uo91fgOZrfc8W0")   
+genai.configure(api_key="*******************")   
 
 # ใช้โมเดลใหม่ที่แม่นยำขึ้น
 eng_model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
