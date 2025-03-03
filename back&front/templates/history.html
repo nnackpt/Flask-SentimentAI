@@ -6,6 +6,9 @@
     <title>History</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <link rel="icon" href="{{ url_for('static', filename='img/history.png') }}?v=1'">
 </head>
 <body>
     <header>
@@ -14,13 +17,16 @@
                 <!-- ตรวจสอบว่าอยู่ที่หน้าแรกหรือไม่ -->
                 <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">หน้าแรก</a>
                 <!-- ตรวจสอบว่าอยู่ที่หน้าประวัติการวิเคราะห์หรือไม่ -->
-                <a href="{{ url_for('history_page') }}" class="{% if request.endpoint == 'history_page' %}active{% endif %}">ประวัติการวิเคราะห์</a>
+                <a href="{{ url_for('history_page') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">ประวัติการวิเคราะห์</a>
+                <a href="{{ url_for('question') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">คำถามที่พบบ่อย</a>
             </div>
             <a class="logout-button" href="{{ url_for('logout') }}">ออกจากระบบ</a>
         </div>
     </header>
+
+    <h1 class="faq-title">ประวัติการวิเคราะห์</h1>
+
     <div class="container">
-        <h2>ประวัติการวิเคราะห์</h2>
         <div class="history-list">
             <!-- ตรวจสอบว่ามีประวัติการวิเคราะห์หรือไม่ -->
             {% if history %}
@@ -34,7 +40,13 @@
                         <p><b>เวลา:</b> {{ item.timestamp }}</p> <!-- เพิ่มการแสดงเวลา -->
                     </div>
                     <div class="history-actions">
-                        <button class="download-btn" onclick="downloadResult('{{ item.text }}', '{{ item.sentiment }}', '{{ item.confidence }}', '{{ item.response }}')">ดาวน์โหลด</button>
+                        <button class="download-btn" 
+                            data-text="{{ item.text }}" 
+                            data-sentiment="{{ item.sentiment }}" 
+                            data-confidence="{{ item.confidence }}" 
+                            data-response="{{ item.response }}">
+                            ดาวน์โหลด
+                        </button>
                         <button class="delete-btn" onclick="deleteHistory('{{ item.text }}')">ลบ</button>
                     </div>
                 </div>
@@ -44,38 +56,6 @@
             {% endif %}
         </div>
     </div>
-    <script>
-        // ฟังก์ชันลบประวัติการวิเคราะห์
-        function deleteHistory(text) {
-            if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?")) {
-                fetch("/delete_history", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ text: text })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload(); // รีเฟรชหน้าเพื่ออัปเดตประวัติ
-                    } else {
-                        alert("เกิดข้อผิดพลาดขณะลบข้อมูล");
-                    }
-                });
-            }
-        }
-
-        // ฟังก์ชันดาวน์โหลดประวัติการวิเคราะห์เป็นไฟล์ txt
-        function downloadResult(text, sentiment, confidence, response) {
-            const content = `ข้อความ: ${text}\nอารมณ์: ${sentiment} (ความมั่นใจ: ${confidence})\nคำตอบ AI: ${response}`;
-            const blob = new Blob([content], { type: "text/plain" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "analysis_result.txt";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-    </script>
 </body>
+<script src="{{ url_for('static', filename='js/scripts.js') }}?v=1"></script>
 </html>

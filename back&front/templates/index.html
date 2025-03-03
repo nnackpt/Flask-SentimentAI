@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NLP Text Analysis</title>
+    <title>SmartReply AI Powered by NLP</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=1">
+    <link rel="icon" href="{{ url_for('static', filename='img/chat.png') }}?v=1'">
 </head>
 <body>
     <header>
@@ -15,21 +16,23 @@
                 <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">หน้าแรก</a>
                 <!-- ตรวจสอบว่าอยู่ที่หน้าประวัติการวิเคราะห์หรือไม่ -->
                 <a href="{{ url_for('history_page') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">ประวัติการวิเคราะห์</a>
+                <a href="{{ url_for('question') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">คำถามที่พบบ่อย</a>
             </div>
             <a class="logout-button" href="{{ url_for('logout') }}">ออกจากระบบ</a>
         </div>
     </header>
     
+    <h1 class="faq-title">SmartReply AI Powered by NLP</h1>
+    <label for="language">เลือกภาษา:</label>
+    <select id="language">
+        <option value="th">ไทย</option>
+        <option value="en">English</option>
+    </select>
+
     <div class="container">
-        <h2>วิเคราะห์ข้อความด้วย NLP</h2>
-        <label for="language">เลือกภาษา:</label>
-        <select id="language">
-            <option value="th">ไทย</option>
-            <option value="en">English</option>
-        </select>
         <textarea id="userInput" class="custom-textarea" placeholder="ใส่ข้อความที่ต้องการวิเคราะห์..."></textarea>
         <br>
-        <button class="comic-button" id="analyzeBtn" onclick="analyzeText()">วิเคราะห์ข้อความ</button>
+        <button class="comic-button" id="analyzeBtn">วิเคราะห์ข้อความ</button>
         <div class="loader" id="loader">
             <div class="bar1"></div><div class="bar2"></div><div class="bar3"></div>
             <div class="bar4"></div><div class="bar5"></div><div class="bar6"></div>
@@ -38,43 +41,7 @@
         </div>
         <div id="result" class="result-container" style="display: none;"></div>
     </div>
-    <script>
 
-        function analyzeText() {
-            let text = document.getElementById("userInput").value;
-            let language = document.getElementById("language").value;
-            let analyzeBtn = document.getElementById("analyzeBtn");
-            let loader = document.getElementById("loader");
-            let resultDiv = document.getElementById("result");
-            
-            if (!text.trim()) {
-                alert("กรุณาใส่ข้อความก่อนกดวิเคราะห์");
-                return;
-            }
-
-            analyzeBtn.style.display = "none";
-            loader.style.display = "block";
-            resultDiv.style.display = "none"; // ซ่อนกรอบผลลัพธ์ตอนเริ่มต้น
-            
-            fetch("/analyze", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: text, language: language })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    resultDiv.innerHTML = `<p style="color:red;"><b>ข้อผิดพลาด:</b> ${data.error}</p>`;
-                } else {
-                    resultDiv.innerHTML = `<h3>ผลลัพธ์</h3><p><b>อารมณ์:</b> ${data.sentiment} (ความมั่นใจ: ${data.confidence})</p><p><b>AI ตอบ:</b> ${data.response}</p>`;
-                }
-                resultDiv.style.display = "block"; // แสดงกรอบผลลัพธ์เมื่อมีผลลัพธ์
-            })
-            .finally(() => {
-                analyzeBtn.style.display = "inline-block";
-                loader.style.display = "none";
-            });
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}?v=1"></script>
 </body>
 </html>

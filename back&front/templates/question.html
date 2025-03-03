@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำถามที่พบบ่อย</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=1">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='img/question.png') }}?v=1'">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="nav-links">
+                <!-- ตรวจสอบว่าอยู่ที่หน้าแรกหรือไม่ -->
+                <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">หน้าแรก</a>
+                <!-- ตรวจสอบว่าอยู่ที่หน้าประวัติการวิเคราะห์หรือไม่ -->
+                <a href="{{ url_for('history_page') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">ประวัติการวิเคราะห์</a>
+                <a href="{{ url_for('question') }}" class="{% if request.endpoint == 'history' %}active{% endif %}">คำถามที่พบบ่อย</a>
+            </div>
+            <a class="logout-button" href="{{ url_for('logout') }}">ออกจากระบบ</a>
+        </div>
+    </header>
+
+    <h1 class="faq-title">คำถามที่พบบ่อย</h1>
+</body>
+</html>
