@@ -109,6 +109,7 @@ header { background: #93C5FD; }
     cursor: pointer;
     border-radius: 5px;
     margin-right: 10px;
+    font-family: "Prompt", sans-serif;
 }
 .delete-btn:hover {
     background-color: #cc0000;
@@ -116,6 +117,7 @@ header { background: #93C5FD; }
 
 .download-btn {
     background-color: #4CAF50;
+    font-family: "Prompt", sans-serif;
 }
 
 .download-btn:hover {
@@ -169,4 +171,25 @@ header { background: #93C5FD; }
     background-color: #007bff;
     padding: 5px 10px;
     border-radius: 5px;
+}
+
+.faq-title {
+    color: white;
+    font-size: 36px;
+    font-weight: bold;
+    /*-webkit-text-stroke: 1px black; /* กำหนดเส้นขอบสีดำหนา 2px */
+    text-shadow: 0px 5px 8px rgba(0, 0, 0, 0.8);
+    text-align: center;
+}
+
+/* เปลี่ยนฟอนต์ของปุ่ม "ยืนยัน" */
+.swal2-confirm {
+    font-family: "Prompt", sans-serif;
+    font-size: 16px; /* ขนาดฟอนต์ */
+}
+
+/* เปลี่ยนฟอนต์ของปุ่ม "ยกเลิก" */
+.swal2-cancel {
+    font-family: "Prompt", sans-serif;
+    font-size: 16px; /* ขนาดฟอนต์ */
 }
