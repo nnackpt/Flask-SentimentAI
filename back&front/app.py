@@ -11,7 +11,7 @@ CORS(app)
 app.template_folder = "templates"
 
 # ตั้งค่า Gemini API Key
-genai.configure(api_key="*******************")   
+genai.configure(api_key="*********************")   
 
 # ใช้โมเดลใหม่ที่แม่นยำขึ้น
 eng_model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -106,12 +106,12 @@ def map_sentiment(sentiment_label, score, language):
 # ฟังก์ชันเรียก Gemini API
 def get_gemini_response(prompt, language):
     try:
-        model = genai.GenerativeModel("gemini-pro")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         
         if language == "th":
-            prompt = f"ตอบคำถามนี้เป็นภาษาไทย โดยให้คำตอบเป็นมุมมองของธุรกิจว่าควรตอบกลับลูกค้าอย่างไร: {prompt}"
+            prompt = f"ตอบคำถามนี้เป็นภาษาไทย โดยให้คำตอบเป็นมุมมองของธุรกิจว่าควรตอบกลับลูกค้าอย่างไร ขอคำตอบไม่เกิน 300 ตัวอักษร: {prompt}"
         else:
-            prompt = f"Answer this question in English, giving your answer from a business perspective on how you should respond to your customers: {prompt}"
+            prompt = f"Answer this question in English, giving your answer from a business perspective on how you should respond to your customers, Please provide an answer in no more than 300 characters.: {prompt}"
         
         response = model.generate_content(prompt)
         return response.text
@@ -217,6 +217,10 @@ def history_page():
     # เรียงข้อมูลประวัติจากใหม่ไปเก่า (Newest to Oldest)
     sorted_history = sorted(analysis_history, key=lambda x: x["timestamp"], reverse=True)
     return render_template("history.html", history=sorted_history)
+
+@app.route("/question")
+def question():
+    return render_template("question.html")
 
 # ข้าม favicon.ico เพื่อไม่ให้เกิด 404
 @app.route('/favicon.ico')
