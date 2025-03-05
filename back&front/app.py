@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
 import google.generativeai as genai
 from transformers import AutoTokenizer, pipeline
@@ -9,9 +9,13 @@ from datetime import datetime
 app = Flask(__name__, static_folder='static')
 CORS(app)
 app.template_folder = "templates"
+app.secret_key = '**************'
+
+VALID_USERNAME = "admin"
+VALID_PASSWORD = "123"
 
 # ตั้งค่า Gemini API Key
-genai.configure(api_key="*********************")   
+genai.configure(api_key="*****************")   
 
 # ใช้โมเดลใหม่ที่แม่นยำขึ้น
 eng_model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -124,14 +128,29 @@ def get_gemini_response(prompt, language):
 def login_page():
     return render_template("login.html")
 
+@app.route("/authenticate", methods=['POST'])
+def authenticate():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    if username == VALID_USERNAME and password == VALID_PASSWORD:
+        session['logged_in'] = True
+        return redirect(url_for('home'))
+    
+    # หากไม่ถูกต้อง
+    return render_template("login.html", error="ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
+
 @app.route("/home")
 def home():
+    if not session.get('logged_in'):
+        return redirect(url_for('login_page'))
     return render_template("index.html")
 
 # Route สำหรับการออกจากระบบ
 @app.route("/logout")
 def logout():
-    return redirect(url_for("login_page"))
+    session.pop('logged_in', None)
+    return redirect(url_for('login_page'))
 
 # สร้าง list สำหรับเก็บประวัติการวิเคราะห์
 analysis_history = []
