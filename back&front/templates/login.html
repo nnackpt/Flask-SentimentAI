@@ -3,47 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Page</title>
+  <title>Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}?v=1">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" href="{{ url_for('static', filename='img/favicon-login.ico') }}" type="image/x-icon">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: "Prompt", sans-serif;
-    }
-  </style>
 </head>
-<body class="flex justify-center items-center h-screen bg-blue-300">
-  <div class="flex bg-gray-100 rounded-lg overflow-hidden shadow-lg w-[750px]">
-    <div class="flex flex-col justify-center items-center p-8 w-1/2">
-      <h2 class="text-2xl font-bold mb-5">LOGIN 🔒</h2>
-      
-      <!-- Username Input -->
-      <div class="flex items-center bg-white rounded-md mb-4 p-3 w-full shadow-sm">
-        <span class="mr-2">👤</span>
-        <input type="text" id="username" placeholder="Username" class="outline-none flex-1" />
-      </div>
-      
-      <!-- Password Input -->
-      <div class="flex items-center bg-white rounded-md mb-4 p-3 w-full shadow-sm">
-        <span class="mr-2">🔒</span>
-        <input type="password" id="password" placeholder="Password" class="outline-none flex-1" />
-      </div>
-      
-      <!-- Error Message -->
-      <div id="error-message" class="hidden text-red-600 text-sm font-medium mt-2 w-full text-center"></div>
+<body>
 
-      <!-- Login Button -->
-      <button onclick="login()" class="bg-blue-500 text-white w-full p-3 rounded-md text-lg shadow-md hover:bg-blue-600">
-        Login
-      </button>
+  <div class="form-container form-3 active">
+    <div class="form-image">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 148">
+        <path fill="white" fill-rule="evenodd"
+          d="M.005 121C311 121 409.898-.25 811 0c400 0 500 121 789 121v77H0s.005-48 .005-77z"
+          transform="matrix(-1 0 0 1 1600 0)" />
+      </svg>
+      
     </div>
-    
-    <!-- Image Section -->
-    <div class="w-1/2 flex justify-center items-center">
-      <img src="{{ url_for('static', filename='img/login.png') }}" alt="Login Image" class="w-[232px] h-[232px] object-cover" />
+    <div class="padding-wrap">
+      <h1>Login</h1>
+      {% if error %}
+        <div class="error-message">{{ error }}</div>
+      {% endif %}
+      <form id="log-in-1" action="{{ url_for('authenticate') }}" method="POST">
+        <div class="form-group">
+          <input required id="username" type="text" name="username" />
+          <label for="username">Username</label>
+        </div>
+        <div class="form-group">
+          <input required id="passin" type="password" name="password" />
+          <label for="passin">Password</label>
+        </div>
+        <input type="submit" value="Log in" />
+      </form>
     </div>
   </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}?v=1"></script>
 </body>
-<script src="{{ url_for('static', filename='js/scripts.js') }}?v=1"></script>
 </html>
