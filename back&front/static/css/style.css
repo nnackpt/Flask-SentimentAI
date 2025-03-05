@@ -193,3 +193,16 @@ header { background: #93C5FD; }
     font-family: "Prompt", sans-serif;
     font-size: 16px; /* ขนาดฟอนต์ */
 }
+
+.error-message {
+    display: none; /* ซ่อนข้อความเริ่มต้น */
+    font-family: "Prompt", sans-serif;
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ffcccc;
+    background-color: #fff0f0;
+    border-radius: 5px;
+  }
