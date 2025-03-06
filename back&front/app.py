@@ -9,13 +9,13 @@ from datetime import datetime
 app = Flask(__name__, static_folder='static')
 CORS(app)
 app.template_folder = "templates"
-app.secret_key = '**************'
+app.secret_key = 'a4520859d66bf1d01296f558ac7c290767b7781cb173e3fe4d52b3c97896606e'
 
 VALID_USERNAME = "admin"
 VALID_PASSWORD = "123"
 
 # ตั้งค่า Gemini API Key
-genai.configure(api_key="*****************")   
+genai.configure(api_key="*******************")   
 
 # ใช้โมเดลใหม่ที่แม่นยำขึ้น
 eng_model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -142,6 +142,12 @@ def authenticate():
 
 @app.route("/home")
 def home():
+    if not session.get('logged_in'):
+        return redirect(url_for('login_page'))
+    return render_template("home.html")
+
+@app.route("/index")
+def index():
     if not session.get('logged_in'):
         return redirect(url_for('login_page'))
     return render_template("index.html")
