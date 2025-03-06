@@ -121,14 +121,14 @@
       border-radius: 100px;
       border: 0;
       font-weight: bold;
-      background: var(--primary-color);
-      color: white;
+      background: #F6D442;
+      color: #33383C;
       margin-bottom: 20px;
       transition: background 0.3s;
       cursor: pointer;
     }
     input[type="submit"]:hover {
-      background: #fff;
+      background: #a2a2a1;
       outline: 2px solid var(--primary-color);
       color: var(--primary-color);
     }
@@ -209,3 +209,4 @@
       font-weight: bold; /* ทำให้ตัวหนา */
       text-align: center;
     }
+    
