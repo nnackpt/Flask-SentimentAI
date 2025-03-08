@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q&A | Shop Helper</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amethysta&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}?v=1">
+    <link rel="icon" href="{{ url_for('static', filename='img/chat.png') }}?v=1'">
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+          <i class="fa-solid fa-font-awesome"></i>
+          <a href="#">SHOP HELPER</a>
+        </div>
+        <div class="menu">
+          <div class="menu-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('index') }}">Q&A</a>
+            <a href="{{ url_for('history_page') }}">History</a>
+            <a href="{{ url_for('question') }}">FAQ</a>
+          </div>
+          <a href="{{ url_for('logout') }}" class="log-in">Log Out</a>
+        </div>
+        <div class="menu-btn">
+          <i class="fa-solid fa-bars"></i>
+        </div>
+      </nav>
+
+      <div class="notification-container">
+        <div id="customAlert" class="notification">
+          <div class="notification-icon">⚠️</div>
+          <div class="notification-message">กรุณาใส่ข้อความก่อนกดวิเคราะห์</div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="left-section">
+            <div class="textarea-container" style="position: relative;">
+
+                <div class="custom-dropdown" style="position: absolute; top: 10px; right: 25px; z-index: 10;">
+                    <button id="selected-language" class="dropdown-btn" data-value="th">
+                        <img src="{{ url_for('static', filename='img/th.png') }}" alt="Thai Flag"> Thai
+                    </button>
+                    <ul class="dropdown-list">
+                        <li data-value="th" data-img="{{ url_for('static', filename='img/th.png') }}">
+                            <img src="{{ url_for('static', filename='img/th.png') }}" alt="Thai Flag"> Thai
+                        </li>
+                        <li data-value="en" data-img="{{ url_for('static', filename='img/uk.png') }}">
+                            <img src="{{ url_for('static', filename='img/uk.png') }}" alt="English Flag"> English
+                        </li>
+                    </ul>
+                </div>
+
+                <textarea id="userInput" class="custom-textarea" placeholder="วางข้อความของคุณที่นี่เพื่อวิเคราะห์ข้อความ"></textarea>
+                <button aria-label="Delete item" class="delete-button" id="clearBtn">
+                    <svg
+                      class="trash-svg"
+                      viewBox="0 -10 64 74"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g id="trash-can">
+                        <rect
+                          x="16"
+                          y="24"
+                          width="32"
+                          height="30"
+                          rx="3"
+                          ry="3"
+                          fill="#e74c3c"
+                        ></rect>
+                  
+                        <g transform-origin="12 18" id="lid-group">
+                          <rect
+                            x="12"
+                            y="12"
+                            width="40"
+                            height="6"
+                            rx="2"
+                            ry="2"
+                            fill="#c0392b"
+                          ></rect>
+                          <rect
+                            x="26"
+                            y="8"
+                            width="12"
+                            height="4"
+                            rx="2"
+                            ry="2"
+                            fill="#c0392b"
+                          ></rect>
+                        </g>
+                      </g>
+                    </svg>
+                </button> 
+            </div>
+            <button class="comic-button" id="analyzeBtn">วิเคราะห์ข้อความ</button>
+            <div class="loader" id="loader">
+                <div class="bar1"></div><div class="bar2"></div><div class="bar3"></div>
+                <div class="bar4"></div><div class="bar5"></div><div class="bar6"></div>
+                <div class="bar7"></div><div class="bar8"></div><div class="bar9"></div>
+                <div class="bar10"></div><div class="bar11"></div><div class="bar12"></div>
+            </div>
+        </div>
+        <div class="right-section">
+            <div id="result" class="custom-textarea">
+                <p id="placeholder" class="p">ผลลัพธ์จะแสดงที่นี่</p>
+            </div>
+        </div>
+    </div>
+    <div class="history-button-container">
+      <button id="historyBtn" class="history-button">
+          <div class="icon-container">
+              <i class="fa-solid fa-clock-rotate-left" style="color: #757575;"></i>
+          </div>
+          <span>ประวัติ</span>
+      </button>
+    </div>
+    
+    <!-- History Panel (replacing sidebar) -->
+    <div id="historyPanel" class="history-panel">
+        <div class="panel-header">
+            <h3>ประวัติการวิเคราะห์</h3>
+            <button id="closePanel"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="panel-content">
+            <div class="history-list" id="historyList">
+                <!-- History items will be loaded here -->
+                <div class="empty-history-message">ไม่พบประวัติการวิเคราะห์</div>
+            </div>
+        </div>
+    </div>
+    <div id="panelOverlay" class="panel-overlay"></div>
+  
+</body>
+<script src="{{ url_for('static', filename='js/index.js') }}?v=1"></script>
+</html>
