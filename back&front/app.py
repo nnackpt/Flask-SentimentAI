@@ -115,7 +115,7 @@ def get_gemini_response(prompt, language):
         if language == "th":
             prompt = f"ตอบคำถามนี้เป็นภาษาไทย โดยให้คำตอบเป็นมุมมองของธุรกิจว่าควรตอบกลับลูกค้าอย่างไร ขอคำตอบไม่เกิน 300 ตัวอักษร: {prompt}"
         else:
-            prompt = f"Answer this question in English, giving your answer from a business perspective on how you should respond to your customers, Please provide an answer in no more than 300 characters.: {prompt}"
+            prompt = f"ตอบคำถามนี้เป็นภาษาอังกฤษ โดยให้คำตอบที่ดีที่สุดในมุมมองของธุรกิจว่าควรตอบกลับลูกค้าอย่างไร ขอคำตอบไม่เกิน 300 ตัวอักษร (ไม่ต้องทวนคำถามขอแค่คำตอบ): {prompt}"
         
         response = model.generate_content(prompt)
         return response.text
