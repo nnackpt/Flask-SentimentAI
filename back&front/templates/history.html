@@ -7,16 +7,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Amethysta&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}?v=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
     <link rel="icon" href="{{ url_for('static', filename='img/history.png') }}?v=1'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
         <nav class="navbar">
             <div class="logo">
-              <i class="fa-solid fa-font-awesome"></i>
               <a href="#">SHOP HELPER</a>
             </div>
             <div class="menu">
@@ -34,30 +34,47 @@
           </nav>
     </header>
 
-    <h1 class="faq-title">ประวัติการวิเคราะห์</h1>
+    <main class="container">
+    <h1 class="page-title">ประวัติการวิเคราะห์</h1>
 
     <div class="container">
         <div class="history-list">
-            <!-- ตรวจสอบว่ามีประวัติการวิเคราะห์หรือไม่ -->
             {% if history %}
                 {% for item in history %}
-                <div class="history-item">
+                <div class="history-card">
                     <div class="history-content">
-                        <p><b>ข้อความ:</b> {{ item.text }}</p>
-                        <p><b>อารมณ์:</b> {{ item.sentiment }}</p>
-                        <p><b>ความมั่นใจ:</b> {{ item.confidence }}</p>
-                        <p><b>คำตอบ AI:</b> {{ item.response }}</p>
-                        <p><b>เวลา:</b> {{ item.timestamp }}</p> <!-- เพิ่มการแสดงเวลา -->
+                        <div class="history-field">
+                            <span class="field-label">ข้อความ:</span>
+                            <span class="field-value">{{ item.text }}</span>
+                        </div>
+                        <div class="history-field">
+                            <span class="field-label">อารมณ์ของข้อความ:</span>
+                            <span class="field-value">{{ item.sentiment }}</span>
+                        </div>
+                        <div class="history-field">
+                            <span class="field-label">ความมั่นใจ:</span>
+                            <span class="field-value">{{ item.confidence }}</span>
+                        </div>
+                        <div class="history-field">
+                            <span class="field-label">แนะนำคำตอบจาก AI:</span>
+                            <p class="field-value response-text">{{ item.response }}</p>
+                        </div>
+                        <div class="history-field">
+                            <span class="field-label">เวลา:</span>
+                            <span class="field-value">{{ item.timestamp }}</span>
+                        </div>
                     </div>
                     <div class="history-actions">
-                        <button class="download-btn" 
+                        <button class="action-btn download-btn" 
                             data-text="{{ item.text }}" 
                             data-sentiment="{{ item.sentiment }}" 
                             data-confidence="{{ item.confidence }}" 
                             data-response="{{ item.response }}">
-                            ดาวน์โหลด
+                            <i class="fas fa-download"></i> ดาวน์โหลด
                         </button>
-                        <button class="delete-btn" onclick="deleteHistory('{{ item.text }}')">ลบ</button>
+                        <button class="action-btn delete-btn" onclick="deleteHistory('{{ item.text }}')">
+                            <i class="fas fa-trash"></i> ลบ
+                        </button>
                     </div>
                 </div>
                 {% endfor %}
@@ -65,7 +82,9 @@
                 <p style="text-align: center; color: #888;">ไม่มีประวัติการวิเคราะห์</p>
             {% endif %}
         </div>
+        <div id="pagination" class="pagination"></div>
     </div>
+    </main>
 </body>
 <script src="{{ url_for('static', filename='js/history.js') }}?v=1"></script>
 </html>
