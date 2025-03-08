@@ -47,6 +47,67 @@ function downloadResult(text, sentiment, confidence, response) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    // กำหนดจำนวนประวัติต่อหน้า
+    const itemsPerPage = 4;
+
+    // รับประวัติทั้งหมด
+    const historyCards = Array.from(document.querySelectorAll(".history-card"));
+
+    // คำนวณจำนวนหน้า
+    const totalPages = Math.ceil(historyCards.length / itemsPerPage);
+
+    // แสดงประวัติบนหน้าแรก
+    displayPage(1, historyCards, itemsPerPage);
+
+    // สร้างปุ่ม pagination ถ้ามีมากกว่าหนึ่งหน้า
+    if (totalPages > 1) {
+        createPagination(totalPages);
+    } else {
+        document.getElementById("pagination").style.display = "none";
+    }
+
+    // ฟังก์ชันแสดงประวัติบนหน้าที่ระบุ
+    function displayPage(page, cards, itemsPerPage) {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        cards.forEach((card, index) => {
+            if (index >= startIndex && index < endIndex) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
+    // ฟังก์ชันสร้างปุ่ม pagination
+    function createPagination(totalPages) {
+        const paginationContainer = document.getElementById("pagination");
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageBtn = document.createElement("button");
+            pageBtn.textContent = i;
+            pageBtn.classList.add("page-btn");
+
+            if (i === 1) {
+                pageBtn.classList.add("active");
+            }
+
+            pageBtn.addEventListener("click", () => {
+                const currentPageBtns = document.querySelectorAll(".page-btn");
+                currentPageBtns.forEach(btn => btn.classList.remove("active"));
+                pageBtn.classList.add("active");
+
+                displayPage(i, historyCards, itemsPerPage);
+            });
+
+            paginationContainer.appendChild(pageBtn);
+        }
+    }
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".download-btn").forEach(button => {
         button.addEventListener("click", function () {
             let text = this.getAttribute("data-text");

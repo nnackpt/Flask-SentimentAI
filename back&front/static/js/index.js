@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("analyzeBtn").addEventListener("click", analyzeText);
+    document.getElementById("clearBtn").addEventListener("click", clearText);
 });
 
 function analyzeText() {
@@ -11,7 +12,7 @@ function analyzeText() {
     const resultDiv = document.getElementById("result");
 
     if (!text.trim()) {
-        alert("กรุณาใส่ข้อความก่อนกดวิเคราะห์");
+        showNotification("กรุณาใส่ข้อความก่อนกดวิเคราะห์");
         return;
     }
 
@@ -50,6 +51,24 @@ function analyzeText() {
         loader.style.display = "none";
     });
 }
+
+function clearText() {
+    const userInput = document.getElementById("userInput");
+    userInput.value = "";
+}
+
+// เพิ่มฟังก์ชันแสดง notification
+function showNotification(message) {
+    const notification = document.getElementById('customAlert');
+    const messageElement = notification.querySelector('.notification-message');
+    
+    messageElement.textContent = message;
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+      notification.classList.remove('show');
+    }, 3000);
+  }
 
 document.addEventListener("DOMContentLoaded", function () {
     const dropdown = document.querySelector(".custom-dropdown");
