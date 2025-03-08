@@ -1,4 +1,4 @@
-/* Importing fonts */
+/* Keeping all the existing CSS and adding/modifying for the panel */
 @import url("https://fonts.googleapis.com/css2?family=Amethysta&family=Kanit:wght@100;200;300;400;500;600;700;800;900&family=Prompt:wght@300;400;500;600&display=swap");
 
 *,
@@ -485,4 +485,265 @@ select {
   font-family: 'Kanit', sans-serif;
   font-weight: 500;
   color: #c62828;
+}
+
+.history-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.history-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon-container {
+  width: 71.6px;
+  height: 71.6px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.icon-container i {
+  font-size: 32px; /* ขนาดของไอคอน */
+}
+
+.history-button span {
+  font-size: 18px;
+  color: #757575;
+}
+
+/* History Panel Styles (replacing Sidebar) */
+.history-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 80%;
+    max-width: 700px;
+    height: 80%;
+    max-height: 600px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Kanit', sans-serif;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.history-panel.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.panel-header h3 {
+    margin: 0;
+    color: #333;
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.panel-header button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #757575;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.panel-header button:hover {
+    background-color: #f0f0f0;
+}
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  /* Ensure proper scrolling of the entire panel content */
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.history-item {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
+  transition: all 0.2s;
+  border-left: 4px solid #F6D442;
+  height: auto; /* Allow height to adjust to content */
+  margin-bottom: 15px; /* Add some space between items */
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.history-item:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.history-item-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.history-date {
+    font-size: 12px;
+    color: #757575;
+}
+
+/* Adjust text display to prevent overflow */
+.history-text {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 12px;
+  font-weight: 500;
+  /* Remove these properties to prevent truncation */
+  max-height: none;
+  overflow: visible;
+  text-overflow: initial;
+  display: block;
+  -webkit-line-clamp: initial;
+  -webkit-box-orient: initial;
+  word-break: break-word; /* Ensure long words break properly */
+}
+
+.history-sentiment {
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.sentiment-positive {
+    color: white;
+    background-color: #4caf50;
+}
+
+.sentiment-negative {
+    color: white;
+    background-color: #f44336;
+}
+
+.sentiment-neutral {
+    color: white;
+    background-color: #ff9800;
+}
+
+.empty-history-message {
+    text-align: center;
+    color: #757575;
+    padding: 40px 20px;
+    font-size: 16px;
+}
+
+.panel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.panel-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.history-response {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #555;
+  /* Remove max-height and overflow-y to prevent scrollbar */
+  max-height: none;
+  overflow-y: visible;
+  word-break: break-word; /* Ensure long words break properly */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .history-panel {
+      width: 85%; /* Slightly narrower on mobile */
+      right: -85%; /* Start off-screen */
+  }
+}
+
+/* Delete button for history items */
+.delete-history-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.delete-history-btn:hover {
+  background-color: #f1f1f1;
+  color: #e74c3c;
+}
+
+.history-item {
+  transition: opacity 0.3s ease;
+}
+
+/* Ensure the header has proper alignment */
+.history-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
