@@ -1,0 +1,242 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Amethysta&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #222931;
+  font-family: "amethysta", "Kanit";
+  background-size: cover; /* สำคัญที่สุด */
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  border: 0;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.navbar {
+  height: 70px;
+  background-color: #F6D442;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar .logo i {
+  color: #0aa5ff;
+  font-size: 22px;
+}
+
+.navbar .logo a {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgb(0, 0, 0);
+  margin-left: 12px;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.menu-links {
+  display: flex;
+  gap: 24px;
+  border-right: 1px solid #999999;
+  padding-inline: 24px;
+}
+
+.menu-links a {
+  font-weight: 500;
+  color: #000000;
+  padding: 8px 16px;
+}
+.menu-links a:hover {
+  color: white;
+}
+.log-in {
+  font-weight: 500;
+  padding: 12px 22px;
+  background-color: transparent;
+  color: #000000;
+  border-radius: 10px;
+  border: 2px solid #000000;
+  transition: 0.2s;
+}
+.log-in:hover {
+  background-color: #ff0000;
+  color: white;
+}
+
+.menu-btn {
+  font-size: 32px;
+  color: white;
+  display: none;
+  cursor: pointer;
+}
+
+@media (max-width: 53rem) {
+  .menu {
+    display: none;
+  }
+
+  .menu-btn {
+    display: block;
+  }
+}
+
+.page-title {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+  
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background-color: #F6D442;
+}
+
+/* FAQ Styles */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.faq-container {
+    margin-top: 30px;
+}
+
+.faq-item {
+    margin-bottom: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.faq-toggle {
+    display: none;
+}
+
+.faq-question {
+    display: block;
+    padding: 15px 20px;
+    font-weight: 500;
+    color: #000000;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s;
+}
+
+.faq-question:hover {
+    background-color: #F6D442;
+}
+
+.faq-question::after {
+    content: '+';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    transition: transform 0.3s;
+}
+
+.faq-toggle:checked + .faq-question::after {
+    content: '-';
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+
+.faq-toggle:checked ~ .faq-answer {
+    max-height: 1000px;
+}
+
+.faq-content {
+    padding: 0 20px 20px;
+}
+
+.faq-detail {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.faq-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.faq-label {
+    min-width: 150px;
+    font-weight: 500;
+}
+
+.faq-text {
+    flex: 1;
+}
+
+.faq-ai-recommendation {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #F6D442;
+    border-radius: 0 8px 8px 0;
+}
+
+.faq-ai-title, .faq-answer-title {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.faq-answer-used {
+    margin-top: 15px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    color: #999;
+    font-size: 14px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .faq-row {
+        flex-direction: column;
+    }
+    
+    .faq-label {
+        margin-bottom: 5px;
+    }
+}
